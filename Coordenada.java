@@ -28,6 +28,21 @@ public class Coordenada {
 		ret = ret * 2 + new Integer(this.y).hashCode();
 		return ret;
 	}
+	public Object clone(){
+		Coordenada cord = null;
+		try {
+			cord = new Coordenada(this);
+		}
+		catch (Exception e) {}
+		return cord;
+	}
+	public Coordenada(Coordenada c) throws Exception{
+		if (c == null)
+			throw new Exception("Objeto é inválido!");
+		this.x = c.x;
+		this.y = c.y;
+	}
+
 	public void setX(int x) throws Exception{
 		if (new Integer(x) == null || x < 0)
 			throw new Exception("O valor de x é inválido!");
