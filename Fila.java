@@ -35,8 +35,8 @@
  		this.comeco = modelo.comeco;
  		this.fim = modelo.fim;
  		this.vetor = new Object[modelo.vetor.length];
- 		for (int i = 0; i < vetor.length; i++) { // pode ser que hajam valores no modelo que não estejam nas primeiras posições, então é só copiar absolutamente tudo
- 			this.vetor[i] = meuCloneDeX(modelo.vetor[i]);
+ 		for (int i = 0; i < vetor.length; i++) {
+ 			this.vetor[i] = meuCloneDeX((X)modelo.vetor[i]);
  		}
  	}
 
