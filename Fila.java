@@ -11,7 +11,7 @@
 			Class<?>[] tiposDosParametrosFormais = null;    //porque não tem parametro
 			Method metodo = classe.getMethod("clone", tiposDosParametrosFormais);
 			Object[] parametrosReais = null; //pq nao se passam parametros
-			ret = (X)metodo.invoke(parametrosReais);
+			ret = (X)metodo.invoke(x, parametrosReais);
 		}
 		catch (NoSuchMethodException erro) {}
 		catch (IllegalAccessException erro) {}

@@ -1,9 +1,11 @@
-public class Coordenada {
+public class Coordenada implements Cloneable{
 	private int x, y;
 
-	public Coordenada(){
-		this.x = -1;
-		this.y = -1;
+	public Coordenada(int x, int y) throws Exception{
+		if (x < 0 || y < 0)
+			throw new Exception("Valores das coordenadas invalidos.");
+		this.x = x;
+		this.y = y;
 	}
 	public String toString(){
 		return "(" + this.x + ", " + this.y + ")";
@@ -29,12 +31,12 @@ public class Coordenada {
 		return ret;
 	}
 	public Object clone(){
-		Coordenada cord = null;
+		Coordenada coord = null;
 		try {
-			cord = new Coordenada(this);
+			coord = new Coordenada(this);
 		}
 		catch (Exception e) {}
-		return cord;
+		return coord;
 	}
 	public Coordenada(Coordenada c) throws Exception{
 		if (c == null)
@@ -55,12 +57,12 @@ public class Coordenada {
 	}
 	public int getX() throws Exception{
 		if (this.x < 0)
-			throw new Exception("x era null!");
+			throw new Exception("x era menor que 0!");
 		return this.x;
 	}
 	public int getY() throws Exception{
 		if (this.y < 0)
-			throw new Exception("y era null!");
+			throw new Exception("y era menor que 0!");
 		return this.y;
 	}
 }

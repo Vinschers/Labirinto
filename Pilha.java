@@ -3,30 +3,7 @@ import java.lang.reflect.*;
 public class Pilha<X> implements Cloneable {
 	private Object[] vetor;
 	private int qtd;
-	/*
-
-	String str = "COTUCA";
-	char chr = str.charAt(2);
-
-	o código acima é bem simples; suponham agora
-	que queiramos SOFRER... o que fazer? como tornar
-	DEMONIACO o codigo acima?
-
-	String str = "COTUCA";
-	Class<?> classe = str.getClass();
-	Integer parametroReal = 2; //porque quero usar 2 como parametro do charAt
-	Class<?>[] tiposDosParametrosFormais = new Class<?>[1];    //porque charAt tem 1 parametro
-	tiposDosParametrosFormais[0] = parametroReal.getClass();
-	Method metodo = classe.getMethod("charAt", tiposDosParametrosFormais);
-	Object[] parametrosReais = new Object[1]; //pq charAt tem 1 parametro
-	parametrosReais[0] = parametroReal;
-	char chr = ((Character)metodo.invoke(parametrosReais)).charValue();
-
-	`~´
-	*/
-
-	//versao preventiva
-	public Pilha(int capacidade) throws Exception{			//construtor
+	public Pilha(int capacidade) throws Exception{
 		if (capacidade <= 0)
 			throw new Exception("Capacidade invalida");
 
@@ -34,20 +11,8 @@ public class Pilha<X> implements Cloneable {
 		qtd = 0;
 	}
 
-	//versao remediadora
-/*	public Pilha(int capacidade) throws Exception {			//construtor
-			try {
-				this.vetor = new Object[capacidade];
-				qtd = 0;
-			}
-			catch (NegativeArraySizeException erro) {
-				throw new Exception("Capacidade invalida");
-			}
-	} */
-
 	public void guarde (X x) throws Exception{
-		if (x == null) //(s.equals("") || s == null) dá errado porque ele tenta fazer um método de algo
-																							//nulo, se s for null
+		if (x == null)
 			throw new Exception("Informacao ausente");
 		if (this.isCheia())
 			throw new Exception("Armazenamento cheio");
@@ -75,7 +40,7 @@ public class Pilha<X> implements Cloneable {
 			this.vetor[this.qtd] = null;
 		}
 		else {
-			Exception problema;				//é igual a throw new Exception("Nada a jogar fora");
+			Exception problema;
 			problema = new Exception("Nada a jogar fora");
 			throw problema;
 		}
@@ -89,41 +54,37 @@ public class Pilha<X> implements Cloneable {
 		return this.qtd == 0;
 	}
 
-	/* Classes obrigatórias */
-
 	public String toString() {
 		if(this.qtd == 0)
 			return "Vazia";
 		return this.qtd + " elementos, sendo o último " + this.vetor[this.qtd-1];
 	}
 
-	public boolean equals(Object obj) { //se o parâmentro não for Object, não é o "equals", é so um equals qualquer
-
-		if (this==obj) // verificar se a instância é a mesma (é desnecessário)
+	public boolean equals(Object obj) {
+		if (this==obj)
 			return true;
 
-		if (obj == null) //primeiro, verificar se é null
+		if (obj == null)
 			return false;
 
-		if (this.getClass() != obj.getClass()) //depois, verificar se a classe é igual
+		if (this.getClass() != obj.getClass())
 			return false;
 
-		Pilha<X> pil = (Pilha<X>)obj; //forçar o object ser a classe em questão
+		Pilha<X> pil = (Pilha<X>)obj;
 
-		if (this.qtd != pil.qtd) //testar cada atributo
+		if (this.qtd != pil.qtd)
 			return false;
 		for (int i = 0; i < this.qtd; i++)
-			if (!this.vetor[i].equals(pil.vetor[i])) //tem que ser equals para comparar conteúdo
+			if (!this.vetor[i].equals(pil.vetor[i]))
 				return false;
-		return true; //se tudo der certo, eles são iguais
+		return true;
 	}
 
 	public int hashCode() {
-		int ret = 666; //qualquer valor, menos 0
-			// colocar ret * [número primo qualquer que pode variar] + [hashCode de cada coisa guardada no método] n vezes
+		int ret = 666;
 			for (int i = 0; i < this.qtd; i++)
 				ret = ret * 2 + this.vetor[i].hashCode();
-			ret = ret * 2 + new Integer(this.qtd).hashCode(); // não é this.qtd.hashCode() porque int não tem métodos, mas a classe Wrapper tem
+			ret = ret * 2 + new Integer(this.qtd).hashCode();
 		return ret;
 	}
 
@@ -131,7 +92,7 @@ public class Pilha<X> implements Cloneable {
 		if (modelo == null)
 			throw new Exception("Modelo esta null");
 		this.qtd = modelo.qtd;
-		this.vetor = new Object[modelo.vetor.length]; //pra criar um novo vetor, diferente do vetor do modelo
+		this.vetor = new Object[modelo.vetor.length];
 		for (int i = 0; i < qtd; i++)
 			this.vetor[i] = modelo.vetor[i];
 	}
@@ -146,15 +107,13 @@ public class Pilha<X> implements Cloneable {
 	}
 
 	private X meuCloneDeX(X x) {
-		//agora, o que quero fazer do jeito DEMONIACO é
-		// return x.clone();
 		X ret = null;
 		try {
 			Class<?> classe = x.getClass();
-			Class<?>[] tiposDosParametrosFormais = null;    //porque não tem parametro
+			Class<?>[] tiposDosParametrosFormais = null;
 			Method metodo = classe.getMethod("clone", tiposDosParametrosFormais);
-			Object[] parametrosReais = null; //pq nao se passam parametros
-			ret = (X)metodo.invoke(parametrosReais);
+			Object[] parametrosReais = null;
+			ret = (X)metodo.invoke(x, parametrosReais);
 		}
 		catch (NoSuchMethodException erro) {}
 		catch (IllegalAccessException erro) {}
@@ -162,4 +121,4 @@ public class Pilha<X> implements Cloneable {
 		return ret;
 	}
 
-} //Andre Luis Reis Gomes Carvalho
+}
