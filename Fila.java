@@ -8,9 +8,9 @@
 		X ret = null;
 		try {
 			Class<?> classe = x.getClass();
-			Class<?>[] tiposDosParametrosFormais = null;    //porque não tem parametro
+			Class<?>[] tiposDosParametrosFormais = null;
 			Method metodo = classe.getMethod("clone", tiposDosParametrosFormais);
-			Object[] parametrosReais = null; //pq nao se passam parametros
+			Object[] parametrosReais = null;
 			ret = (X)metodo.invoke(x, parametrosReais);
 		}
 		catch (NoSuchMethodException erro) {}
@@ -122,8 +122,9 @@
  		if (this.isVazia()) {
  			throw new Exception("Armazenamento vazio");
  		}
- 		if (this.vetor[comeco] instanceof Cloneable)
+ 		if (this.vetor[comeco] instanceof Cloneable) {
  			return meuCloneDeX((X)this.vetor[this.comeco]);
+		}
  		else
  			return (X)this.vetor[this.comeco];
  	}

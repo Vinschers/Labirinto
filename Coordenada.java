@@ -2,8 +2,10 @@ public class Coordenada implements Cloneable{
 	private int x, y;
 
 	public Coordenada(int x, int y) throws Exception{
-		if (x < 0 || y < 0)
-			throw new Exception("Valores das coordenadas invalidos.");
+		if (x < 0)
+			throw new Exception("Valor do X invalido");
+		if (y < 0)
+			throw new Exception("Valor do Y invalido");
 		this.x = x;
 		this.y = y;
 	}
