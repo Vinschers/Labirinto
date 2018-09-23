@@ -6,6 +6,7 @@ public class Labirinto{
 	static private Fila<Coordenada> fila;
 	static private Pilha<Fila<Coordenada>> possibilidades;
 	static private Pilha<Coordenada> caminho;
+	static private boolean progressivo = true, terminou = false;
 	public static void main(String[] args) {
 		try {
 			readFile();
@@ -13,15 +14,7 @@ public class Labirinto{
 			caminho = new Pilha<Coordenada>(dimensao);
 			possibilidades = new Pilha<Fila<Coordenada>>(dimensao);
 			findE();
-			while (true) {
-				testarPosicoes();
-				atualizarVariaveis();
-				if (labirinto[atual.getX()][atual.getY()] == 'S'){
-					ganhar();
-					break;
-				}
-				labirinto[atual.getX()][atual.getY()] = '*';
-			}
+			resolver();
 		}
 		catch (Exception error) {System.err.println(error.getMessage());}
 	}
@@ -83,10 +76,51 @@ public class Labirinto{
 
 	private static void atualizarVariaveis() {
 		try{
-			atual = fila.getUmItem();
-			fila.jogueForaUmItem();
-			caminho.guarde(atual);
-			possibilidades.guarde(fila);
+			if (progressivo) {
+				if (!fila.isVazia()) {
+					atual = fila.getUmItem();
+					fila.jogueForaUmItem();
+					caminho.guarde(atual);
+					possibilidades.guarde(fila);
+				}
+				else {
+					progressivo = false;
+				}
+			}
+			else {
+				//atualizacao de variaveis no modo regressivo
+			}
+		}
+		catch (Exception erro) {System.err.println(erro.getMessage());}
+	}
+
+	private static void resolver() {
+		try {
+			while (progressivo && !terminou)
+				modoProgressivo();
+			while (!progressivo && !terminou)
+				modoRegressivo();
+		}
+		catch (Exception erro) {System.err.println(erro.getMessage());}
+	}
+
+	private static void modoProgressivo() {
+		try {
+			testarPosicoes();
+			atualizarVariaveis();
+			if (labirinto[atual.getX()][atual.getY()] == 'S'){
+				ganhar();
+				terminou = true;
+				return;
+			}
+			labirinto[atual.getX()][atual.getY()] = '*';
+		}
+		catch (Exception erro) {System.err.println(erro.getMessage());}
+	}
+
+	private static void modoRegressivo() {
+		try {
+			//controle do modo regressivo
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
@@ -104,11 +138,12 @@ public class Labirinto{
 			while (!caminho.isVazia()) {
 				inverso.guarde(caminho.getUmItem());
 				caminho.jogueForaUmItem();
-				System.out.println(inverso.getUmItem());
 			}
-			//for (int i = 0; i < dimensao; i++)
-				//System.out.print(inverso.getUmItem().toString());
-			System.out.println("ganhou yay");
+			System.out.println("Caminho que foi percorrido: ");
+			while (!inverso.isVazia()) {
+				System.out.println(inverso.getUmItem());
+				inverso.jogueForaUmItem();
+			}
 		}
 		catch (Exception erro) {}
 	}
