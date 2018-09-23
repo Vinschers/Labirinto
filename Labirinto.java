@@ -14,7 +14,8 @@ public class Labirinto{
 			caminho = new Pilha<Coordenada>(dimensao);
 			possibilidades = new Pilha<Fila<Coordenada>>(dimensao);
 			findE();
-			resolver();
+			if (!terminou)
+				resolver();
 		}
 		catch (Exception error) {System.err.println(error.getMessage());}
 	}
@@ -45,16 +46,28 @@ public class Labirinto{
 
 	private static void findE() throws Exception{
 		for (int i = 0; i < columns; i++) {			//bordas horizontais
-			if (labirinto[0][i] == 'E')		//cima
-				atual = new Coordenada(0, i);
-			else if (labirinto[rows - 1][i] == 'E') //baixo
-				atual = new Coordenada(rows - 1, i);
+			if (atual == null) {
+				if (labirinto[0][i] == 'E')		//cima
+					atual = new Coordenada(0, i);
+				else if (labirinto[rows - 1][i] == 'E') //baixo
+					atual = new Coordenada(rows - 1, i);
+			}
+			else {
+				terminou = true;
+				throw new Exception("O labirinto tem mais de uma entrada!");
+			}
 		}
 		for (int i = 0; i < rows; i++) {			//bordas verticais
-			if (labirinto[i][0] == 'E')	//esqueda
-				atual = new Coordenada(i, 0);
-			else if (labirinto[i][columns - 1] == 'E') //direita
-				atual = new Coordenada(i, columns - 1);
+			if (atual == null) {
+				if (labirinto[i][0] == 'E')	//esqueda
+					atual = new Coordenada(i, 0);
+				else if (labirinto[i][columns - 1] == 'E') //direita
+					atual = new Coordenada(i, columns - 1);
+			}
+			else {
+				terminou = true;
+				throw new Exception("O labirinto tem mais de uma entrada!");
+			}
 		}
 		if (atual == null)
 			throw new Exception("Entrada do labirinto não encontrada!");
@@ -118,8 +131,10 @@ public class Labirinto{
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
 
-	private static void modoRegressivo() {
+	private static void modoRegressivo() throws Exception{
 		try {
+			if (possibilidades.isVazia())
+				throw new Exception("Não há saída para o labirinto!");
 			//controle do modo regressivo
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
