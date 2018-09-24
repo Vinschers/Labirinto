@@ -46,27 +46,23 @@ public class Labirinto{
 
 	private static void findE() throws Exception{
 		for (int i = 0; i < columns; i++) {			//bordas horizontais
-			if (atual == null) {
-				if (labirinto[0][i] == 'E')		//cima
-					atual = new Coordenada(0, i);
-				else if (labirinto[rows - 1][i] == 'E') //baixo
-					atual = new Coordenada(rows - 1, i);
+			if (labirinto[0][i] == 'E'){		//cima
+				atual = new Coordenada(0, i);
+				return;
 			}
-			else {
-				terminou = true;
-				throw new Exception("O labirinto tem mais de uma entrada!");
+			else if (labirinto[rows - 1][i] == 'E'){ //baixo
+				atual = new Coordenada(rows - 1, i);
+				return;
 			}
 		}
 		for (int i = 0; i < rows; i++) {			//bordas verticais
-			if (atual == null) {
-				if (labirinto[i][0] == 'E')	//esqueda
-					atual = new Coordenada(i, 0);
-				else if (labirinto[i][columns - 1] == 'E') //direita
-					atual = new Coordenada(i, columns - 1);
+			if (labirinto[i][0] == 'E'){	//esqueda
+				atual = new Coordenada(i, 0);
+				return;
 			}
-			else {
-				terminou = true;
-				throw new Exception("O labirinto tem mais de uma entrada!");
+			else if (labirinto[i][columns - 1] == 'E'){ //direita
+				atual = new Coordenada(i, columns - 1);
+				return;
 			}
 		}
 		if (atual == null)
@@ -81,7 +77,7 @@ public class Labirinto{
 			fila.guarde(new Coordenada(row, column + 1));
 		if ((column - 1 >= 0) && (labirinto[row][column - 1] == ' ' || labirinto[row][column - 1] == 'S'))
 			fila.guarde(new Coordenada(row, column - 1));
-		if ((row + 1 < rows + 1) && (labirinto[row + 1][column] == ' ' || labirinto[row + 1][column] == 'S'))
+		if ((row + 1 < rows) && (labirinto[row + 1][column] == ' ' || labirinto[row + 1][column] == 'S'))
 			fila.guarde(new Coordenada(row + 1, column));
 		if ((row - 1 >= 0) && (labirinto[row - 1][column] == ' ' || labirinto[row - 1][column] == 'S'))
 			fila.guarde(new Coordenada(row - 1, column));
@@ -109,10 +105,12 @@ public class Labirinto{
 
 	private static void resolver() {
 		try {
-			while (progressivo && !terminou)
-				modoProgressivo();
-			while (!progressivo && !terminou)
-				modoRegressivo();
+			while (!terminou) {
+				while (progressivo && !terminou)
+					modoProgressivo();
+				while (!progressivo && !terminou)
+					modoRegressivo();
+			}
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
@@ -133,23 +131,25 @@ public class Labirinto{
 
 	private static void modoRegressivo() throws Exception{
 		try {
-			if (possibilidades.isVazia())
-				throw new Exception("Não há saída para o labirinto!");
 			//controle do modo regressivo
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
 
+	private static void desenhar() {
+		for (int i = 0; i < rows; i++){
+			for (int k = 0; k < columns; k++)
+				if (k < columns - 1)
+					System.out.print(labirinto[i][k]);
+				else
+					System.out.println(labirinto[i][k]);
+		}
+	}
+
 	private static void ganhar() {
 		try {
 			Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
-			for (int i = 0; i < rows; i++){
-				for (int k = 0; k < columns; k++)
-					if (k < columns - 1)
-						System.out.print(labirinto[i][k]);
-					else
-						System.out.println(labirinto[i][k]);
-			}
+			desenhar();
 			while (!caminho.isVazia()) {
 				inverso.guarde(caminho.getUmItem());
 				caminho.jogueForaUmItem();

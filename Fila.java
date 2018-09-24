@@ -1,143 +1,190 @@
- import java.lang.reflect.*;
- //FIFO = First In First Out
- public class Fila<X> implements Cloneable{
- 	private int qtd, comeco, fim;
- 	private Object[] vetor;
+import java.lang.reflect.*;
 
-	private X meuCloneDeX(X x) {
-		X ret = null;
-		try {
-			Class<?> classe = x.getClass();
-			Class<?>[] tiposDosParametrosFormais = null;
-			Method metodo = classe.getMethod("clone", tiposDosParametrosFormais);
-			Object[] parametrosReais = null;
-			ret = (X)metodo.invoke(x, parametrosReais);
+public class Fila<X> implements Cloneable
+{
+	    private Object[] vetor;  //private String[] vetor --> ainda não tem tamanho
+	    private int qtd = 0;
+	    private int inicio = 0;
+	    private int fim = 0;
+
+	    public Fila(int capacidade) throws Exception
+	    {
+			if(capacidade < 0)
+			   throw new Exception("Capacidade inválida");
+
+			this.vetor = new Object[capacidade];
 		}
-		catch (NoSuchMethodException erro) {}
-		catch (IllegalAccessException erro) {}
-		catch (InvocationTargetException erro) {}
-		return ret;
-	}
 
- 	public Fila(int tamanho) throws Exception{
- 		if (tamanho <= 0)
- 			throw new Exception("Tamanho invalido");
- 		this.vetor = new Object[tamanho];
- 		this.qtd = 0;
- 		this.comeco = 0;
- 		this.fim = 0;
- 	}
+		private X meuCloneDeX(X x)
+		{
+			X ret = null;
+			try
+			{
+				Class<?> classe = x.getClass();
+				Class<?>[] tiposDeParametrosFormais = null;
+				Method metodo = classe.getMethod("clone", tiposDeParametrosFormais);
+				Object[] tiposDeParametrosReais = null;
+				ret = (X)metodo.invoke(tiposDeParametrosReais);
+			}
+			catch(NoSuchMethodException erro)
+			{}
+			catch(IllegalAccessException erro)
+			{}
+			catch(InvocationTargetException erro)
+			{}
 
- 	public Fila(Fila<X> modelo) throws Exception {
- 		if (modelo == null)
- 			throw new Exception("Modelo invalido");
- 		this.qtd = modelo.qtd;
- 		this.comeco = modelo.comeco;
- 		this.fim = modelo.fim;
- 		this.vetor = new Object[modelo.vetor.length];
- 		for (int i = 0; i < vetor.length; i++) {
- 			this.vetor[i] = meuCloneDeX((X)modelo.vetor[i]);
- 		}
- 	}
+			return ret;
+		}
 
- 	public String toString() {
- 		if (this.qtd == 0)
- 			return "Vazia";
- 		return this.qtd + "elementos, sendo o primeiro " + this.vetor[this.comeco].toString();
- 	}
+	    public void guarde(X s) throws Exception
+	    {
+			if(s==null) // s.equals antes não daria certo, pois se ele for null vai dar errado já que não se pode chamar método para objeto null
+			   throw new Exception("Informação ausente");
 
- 	public boolean equals(Object obj) {
- 		if (this == obj)
- 			return true;
- 		if (obj == null)
- 			return false;
- 		if (this.getClass() != obj.getClass())
- 			return false;
- 		Fila<X> f = (Fila<X>)obj;
- 		if (this.qtd != f.qtd)
- 			return false;
- 		for (int i = 0, posThis = this.comeco, posFila = f.comeco; i < this.qtd;
- 		i++, posThis = (posThis<this.vetor.length-1?posThis+1:0),
- 		posFila = (posFila<f.vetor.length-1?posFila+1:0)) {
- 			if (!this.vetor[posThis].equals(f.vetor[posFila]))
- 				return false;
- 		}
- 		return true;
- 	}
+			if(this.isCheia())
+			   throw new Exception("Fila cheia");
 
- 	public Object clone() {
- 		Fila ret = null;
- 		try {
- 			ret = new Fila<X>(this);
- 		}
- 		catch (Exception ex) {}
- 		return ret;
- 	}
-
- 	public int hashCode() {
- 		int ret = 3;
- 		ret = ret * 3 + new Integer(this.qtd).hashCode();
- 		ret = ret * 3 + new Integer(this.fim).hashCode();
- 		ret = ret * 3 + new Integer(this.comeco).hashCode();
- 		for (int i = 0, pos = comeco; i < this.qtd; i++, pos=((pos<vetor.length)?pos+1:0)) {
-			if (this.vetor[pos] != null)
- 				ret = ret * 2 + this.vetor[pos].hashCode();
- 		}
- 		return ret;
- 	}
-
- 	public boolean isCheia() {
- 		return this.qtd == this.vetor.length;
- 	}
-
- 	public boolean isVazia() {
- 		return this.qtd == 0;
- 	}
-
- 	public void guarde(X x) throws Exception{
- 		if (x == null)
- 			throw new Exception("Instancia invalida");
- 		if (this.isCheia())
- 			throw new Exception("Sem espaco de armazenamento");
- 		if (x instanceof Cloneable) {
-			if (this.fim == this.vetor.length - 1) {
-				this.fim = 0;
-				this.vetor[this.fim] = meuCloneDeX(x);
+			if(s instanceof Cloneable)
+			{
+				if(fim == this.vetor.length-1)
+				{
+				   fim = 0;
+				   this.vetor[this.fim] = meuCloneDeX(s);
+				}
+				//this.vetor[this.qtd] = (Horario)s.clone();
+				else
+					this.vetor[this.fim++] = meuCloneDeX(s);
 			}
 			else
-				this.vetor[this.fim++] = meuCloneDeX(x);
-		}
- 		else {
-			if (this.fim == this.vetor.length - 1) {
-				this.fim = 0;
-				this.vetor[this.fim] = x;
+			{
+				if(fim == this.vetor.length-1)
+				{
+				   fim = 0;
+				   this.vetor[this.fim] = s;
+				}
+				//this.vetor[this.qtd] = (Horario)s.clone();
+				else
+					this.vetor[this.fim++] = s;
 			}
+			this.qtd++;
+	    }
+
+	    public X getUmItem() throws Exception
+	    {
+			if(this.isVazia())
+			   throw new Exception("Nada a recuperar");
+
+	        if(this.vetor[this.inicio] instanceof Cloneable)
+	        	return meuCloneDeX((X)this.vetor[this.inicio]);
+
+	        return (X)this.vetor[this.inicio];
+	    }
+
+	    public void jogueForaUmItem() throws Exception
+	    {
+			if(this.isVazia())
+			   throw new Exception("Pilha vazia");
+
+			this.vetor[this.inicio] = null;
+
+			if(this.inicio == this.vetor.length-1)
+			   inicio = 0;
 			else
-				this.vetor[this.fim++] = x;
-		}
- 		this.qtd++;
- 	}
+				inicio++;
 
- 	public X getUmItem() throws Exception{
- 		if (this.isVazia()) {
- 			throw new Exception("Armazenamento vazio");
- 		}
- 		if (this.vetor[comeco] instanceof Cloneable) {
- 			return meuCloneDeX((X)this.vetor[this.comeco]);
-		}
- 		else
- 			return (X)this.vetor[this.comeco];
- 	}
+	        qtd--;
+	    }
 
- 	public void jogueForaUmItem() throws Exception {
- 		if (this.isVazia()) {
- 			throw new Exception("Nao ha nada para excluir");
- 		}
- 		this.vetor[this.comeco] = null;
- 		if (this.comeco == this.vetor.length - 1)
- 			this.comeco = 0;
- 		else
- 			this.comeco++;
- 		this.qtd--;
- 	}
+	    public boolean isCheia()
+	    {
+			return this.qtd == this.vetor.length;
+		}
+
+	    public boolean isVazia()
+	    {
+			return this.qtd == 0;
+		}
+
+		public String toString()
+		{
+			if(this.qtd==0)
+			   return "Vazia";
+
+			return this.qtd+" elementos, sendo o primeiro "+this.vetor[inicio];
+		}
+
+		public boolean equals (Object obj) //compara this e obj
+		{
+			if(this==obj) //dispensável, mas deixa método mais rápido
+			   return true;
+
+			if(obj == null)
+			   return false;
+
+			if(this.getClass()!= obj.getClass())
+			   return false;
+
+			Fila<X> fila = (Fila<X>)obj; // java enxerga que existe uma Fila chamada fila (que é o mesmo obj)
+
+	        if(this.qtd!=fila.qtd)
+	           return false;
+
+	        for(int i = 0,
+	                posThis=this.inicio,
+	                posFila=fila.inicio;
+
+	            i < this.qtd;
+
+	            i++,
+	            posThis=(posThis<this.vetor.length-1?posThis+1:0),
+	            posFila=(posFila<fila.vetor.length-1?posFila+1:0))
+
+	           if(!this.vetor[posThis].equals(fila.vetor[posFila]))
+	              return false;
+
+	        return true;
+		}
+
+		public int hashCode()
+		{
+			int ret = 1; //só não pode ser 0
+
+			ret = ret * 2 + new Integer(this.qtd).hashCode();
+
+			for(int i=0, pos=inicio; i<this.qtd; i++, pos=(pos<vetor.length-1?pos+1:0))
+				ret = ret*2 + this.vetor[pos].hashCode();
+
+			return ret;
+		}
+
+		public Fila (Fila<X> modelo) throws Exception
+		{
+			if(modelo == null)
+		    	throw new Exception("Modelo ausente");
+
+			this.qtd = modelo.qtd;
+
+			this.inicio = modelo.inicio;
+
+			this.fim = modelo.fim;
+
+			this.vetor = new Object[modelo.vetor.length];
+
+			for(int i=0; i<modelo.vetor.length-1; i++)
+		    	this.vetor[i] = modelo.vetor[i];
+		}
+
+		public Object clone()
+		{
+			Fila<X> ret = null;
+			try
+			{
+				ret = new Fila<X>(this);
+			}
+			catch(Exception erro)
+			{}
+
+			return ret;
+		}
+
 }

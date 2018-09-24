@@ -106,19 +106,21 @@ public class Pilha<X> implements Cloneable {
 		return ret;
 	}
 
-	private X meuCloneDeX(X x) {
-		X ret = null;
-		try {
-			Class<?> classe = x.getClass();
-			Class<?>[] tiposDosParametrosFormais = null;
-			Method metodo = classe.getMethod("clone", tiposDosParametrosFormais);
-			Object[] parametrosReais = null;
-			ret = (X)metodo.invoke(x, parametrosReais);
-		}
-		catch (NoSuchMethodException erro) {}
-		catch (IllegalAccessException erro) {}
-		catch (InvocationTargetException erro) {}
-		return ret;
-	}
-
+private X meuCloneDeX(X x)
+    {
+        //fazer: return (X)x.clone();
+        X ret = null;
+        try{
+            Class<?> classe = x.getClass(); //classe String é guardada dentro da variável
+            Class<?>[] tiposDoParametroFormal; //parâmetro formal é declarado na hora de implementar um método
+            tiposDoParametroFormal = null; //vetor nulo, porque clone não tem parâmetros
+            Method metodo = classe.getMethod("clone", tiposDoParametroFormal);
+            Object[] parametrosReais = null;
+            ret = (X)metodo.invoke(x, parametrosReais); //erro aqui, invoke tem dois parâmetros
+        }
+        catch(InvocationTargetException erro){}
+        catch(NoSuchMethodException erro2){}
+        catch(IllegalAccessException erro3){}
+        return ret;
+    }
 }
