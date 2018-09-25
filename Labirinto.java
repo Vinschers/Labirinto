@@ -1,12 +1,12 @@
 import java.io.*;
 public class Labirinto{
-	static private int rows = 0, columns = 0, dimensao = 0;
-	static private char[][] labirinto;
-	static private Coordenada atual;
-	static private Fila<Coordenada> fila;
-	static private Pilha<Fila<Coordenada>> possibilidades;
-	static private Pilha<Coordenada> caminho;
-	static private boolean progressivo = true, terminou = false;
+	static protected int rows = 0, columns = 0, dimensao = 0;
+	static protected char[][] labirinto;
+	static protected Coordenada atual;
+	static protected Fila<Coordenada> fila;
+	static protected Pilha<Fila<Coordenada>> possibilidades;
+	static protected Pilha<Coordenada> caminho;
+	static protected boolean progressivo = true, terminou = false;
 	public static void main(String[] args) {
 		try {
 			readFile();
@@ -19,7 +19,7 @@ public class Labirinto{
 		}
 		catch (Exception error) {System.err.println(error.getMessage());}
 	}
-	private static void readFile() throws Exception{
+	protected static void readFile() throws Exception{
 		try
 		{
 			System.out.print("Digite aqui o nome do arquivo que será lido: ");
@@ -44,7 +44,7 @@ public class Labirinto{
 		{System.err.println(error.getMessage()); readFile();}
 	}
 
-	private static void findE() throws Exception{
+	protected static void findE() throws Exception{
 		for (int i = 0; i < columns; i++) {			//bordas horizontais
 			if (labirinto[0][i] == 'E'){		//cima
 				atual = new Coordenada(0, i);
@@ -69,7 +69,7 @@ public class Labirinto{
 			throw new Exception("Entrada do labirinto não encontrada!");
 	}
 
-	private static void testarPosicoes() throws Exception {
+	protected static void testarPosicoes() throws Exception {
 		fila = new Fila<Coordenada>(3);
 		int row = atual.getX();
 		int column = atual.getY();
@@ -83,7 +83,7 @@ public class Labirinto{
 			fila.guarde(new Coordenada(row - 1, column));
 	}
 
-	private static void atualizarVariaveis() {
+	protected static void atualizarVariaveis() {
 		try{
 			if (progressivo) {
 				if (!fila.isVazia()) {
@@ -103,7 +103,7 @@ public class Labirinto{
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
 
-	private static void resolver() {
+	protected static void resolver() {
 		try {
 			while (!terminou) {
 				while (progressivo && !terminou)
@@ -115,7 +115,7 @@ public class Labirinto{
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
 
-	private static void modoProgressivo() {
+	protected static void modoProgressivo() {
 		try {
 			testarPosicoes();
 			atualizarVariaveis();
@@ -129,14 +129,16 @@ public class Labirinto{
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
 
-	private static void modoRegressivo() throws Exception{
+	protected static void modoRegressivo() throws Exception{
 		try {
-			//controle do modo regressivo
+
+
+
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
 
-	private static void desenhar() {
+	protected static void desenhar() {
 		for (int i = 0; i < rows; i++){
 			for (int k = 0; k < columns; k++)
 				if (k < columns - 1)
@@ -146,7 +148,7 @@ public class Labirinto{
 		}
 	}
 
-	private static void ganhar() {
+	protected static void ganhar() {
 		try {
 			Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
 			desenhar();
