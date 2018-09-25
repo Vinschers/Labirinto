@@ -135,6 +135,9 @@ public class Labirinto{
 				caminho.jogueForaUmItem();
 				labirinto[atual.getX][atual.getY] = " ";
 				fila = possibilidades.getUmItem();
+				possibilidades.jogueForaUmItem();
+				if(fila.isVazia())
+					progressivo = false;
 
 
 
