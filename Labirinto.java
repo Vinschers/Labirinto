@@ -131,6 +131,10 @@ public class Labirinto{
 
 	protected static void modoRegressivo() throws Exception{
 		try {
+				atual = caminho.getUmItem();
+				caminho.jogueForaUmItem();
+				labirinto[atual.getX][atual.getY] = " ";
+				fila = possibilidades.getUmItem();
 
 
 
