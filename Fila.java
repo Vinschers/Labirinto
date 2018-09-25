@@ -24,7 +24,7 @@ public class Fila<X> implements Cloneable
 				Class<?>[] tiposDeParametrosFormais = null;
 				Method metodo = classe.getMethod("clone", tiposDeParametrosFormais);
 				Object[] tiposDeParametrosReais = null;
-				ret = (X)metodo.invoke(tiposDeParametrosReais);
+				ret = (X)metodo.invoke(x, tiposDeParametrosReais);
 			}
 			catch(NoSuchMethodException erro)
 			{}
