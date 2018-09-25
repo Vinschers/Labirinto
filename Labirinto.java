@@ -97,7 +97,10 @@ public class Labirinto{
 				}
 			}
 			else {
-				//atualizacao de variaveis no modo regressivo
+				atual = caminho.getUmItem();
+				caminho.jogueForaUmItem();
+				fila = possibilidades.getUmItem();
+				possibilidades.jogueForaUmItem();
 			}
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
@@ -131,18 +134,14 @@ public class Labirinto{
 
 	protected static void modoRegressivo() throws Exception{
 		try {
-				atual = caminho.getUmItem();
-				caminho.jogueForaUmItem();
-				labirinto[atual.getX][atual.getY] = " ";
-				fila = possibilidades.getUmItem();
-				possibilidades.jogueForaUmItem();
-				if(fila.isVazia())
-					progressivo = false;
-				else
+				atualizarVariaveis();
+				labirinto[atual.getX()][atual.getY()] = ' ';
+				if(!fila.isVazia())
 				{
+					progressivo = true;
+					labirinto[atual.getX()][atual.getY()] = '*';
 					atual = fila.getUmItem();
 					fila.jogueForaUmItem();
-					labirinto[atual.getX][atual.getY] = "*";
 					caminho.guarde(atual);
 					progressivo = true;
 				}
