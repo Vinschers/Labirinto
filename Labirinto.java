@@ -138,9 +138,14 @@ public class Labirinto{
 				possibilidades.jogueForaUmItem();
 				if(fila.isVazia())
 					progressivo = false;
-
-
-
+				else
+				{
+					atual = fila.getUmItem();
+					fila.jogueForaUmItem();
+					labirinto[atual.getX][atual.getY] = "*";
+					caminho.guarde(atual);
+					progressivo = true;
+				}
 		}
 		catch (Exception erro) {System.err.println(erro.getMessage());}
 	}
