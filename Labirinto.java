@@ -12,21 +12,25 @@ public class Labirinto{
 	static protected boolean progressivo = true, terminou = false;
 	public static void main(String[] args) {
 		try {
-			System.out.print("Digite aqui o nome do arquivo que será lido: ");
-			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-			String nomeArquivo = keyboard.readLine();
-			readFile(nomeArquivo);
+			readFile(lerTeclado());
 			initialize();
 			resolver();
 		}
 		catch (Exception error) {
 			System.err.println(error.getMessage());
-			System.out.print("Digite aqui o nome do arquivo que será lido: ");
-			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-			String nomeArquivo = keyboard.readLine();
-			readFile(nomeArquivo);
 		}
 	}
+
+	private static String lerTeclado() throws Exception {
+		String ret = "";
+		try {
+			System.out.print("Digite aqui o nome do arquivo que será lido: ");
+			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+			ret = keyboard.readLine();
+		} catch(Exception e) {System.err.println(e.getMessage());}
+		return ret;
+	}
+
 	protected static void readFile(String nomeArquivo) throws Exception{
 		BufferedReader file = new BufferedReader(new FileReader(nomeArquivo));
 		rows = Integer.parseInt(file.readLine());
@@ -37,6 +41,15 @@ public class Labirinto{
 			line = file.readLine();
 			for (int k = 0; k < columns; k++)
 				labirinto[i][k] = line.charAt(k);
+		}
+		boolean existe = false;
+		for (int i = 0; i < rows; i++)
+			for(int k = 0; k < columns; k++)
+				if (labirinto[i][k] == 'S')
+					existe = true;
+		if (!existe) {
+			terminou = true;
+			throw new Exception("Não há saída para o labirinto");
 		}
 	}
 
@@ -151,7 +164,7 @@ public class Labirinto{
 		}
 	}
 
-	protected static void ganhar() {
+	protected static void ganhar() throws Exception{
 		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
 		desenhar();
 		while (!caminho.isVazia()) {
