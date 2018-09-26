@@ -1,3 +1,6 @@
+import Fila.*;
+import Pilha.*;
+import Coordenada.*;
 import java.io.*;
 public class Labirinto{
 	static protected int rows = 0, columns = 0, dimensao = 0;
