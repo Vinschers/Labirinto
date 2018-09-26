@@ -138,7 +138,7 @@ public class Labirinto{
 				labirinto[atual.getX()][atual.getY()] = ' ';
 				if(!fila.isVazia())
 				{
-					progressivo = true;
+
 					labirinto[atual.getX()][atual.getY()] = '*';
 					atual = fila.getUmItem();
 					fila.jogueForaUmItem();
