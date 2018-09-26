@@ -41,8 +41,8 @@ public class Labirinto{
 		*		O método readFile() lê o labirinto e atribui à matriz
 		*	labirinto as colunas e linhas, a entrada e a saída, verificando
 		*	a existência de 'E' e 'S'.
-		*
-		*	@throws  Exception se não houver saída do labirinto
+		*	@param nomeArquivo nome ou local do arquivo que será lido.
+		*	@throws  Exception se não houver saída do labirinto.
 	*/
 	protected static void readFile(String nomeArquivo) throws Exception{
 		BufferedReader file = new BufferedReader(new FileReader(nomeArquivo));
@@ -85,9 +85,7 @@ public class Labirinto{
 
 		*		O método findE(), como surgere o seu prório nome, tem a função
 		*	de encontrar o caracter 'E' no labirinto, que, na realidade, é a entrada
-		*	do trageto a ser percorrido.
-		*
-		*	@return nada para sair da busca quando achar 'E', pois é desnecessário contiuá-la.
+		*	do trageto a ser percorrido. Ele para a execução do método com um return; para sair da busca quando achar 'E', pois é desnecessário continuá-la.
 		*	@throws Exception caso a entrada não seja encontrada.
 	*/
 
