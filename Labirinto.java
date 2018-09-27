@@ -160,9 +160,9 @@ public class Labirinto{
 		else {
 			atual = caminho.getUmItem();
 			caminho.jogueForaUmItem();
+			labirinto[atual.getX()][atual.getY()] = ' ';
 			fila = possibilidades.getUmItem();
 			possibilidades.jogueForaUmItem();
-			labirinto[atual.getX()][atual.getY()] = ' ';
 		}
 	}
 
@@ -218,7 +218,7 @@ public class Labirinto{
 		atualizarVariaveis();
 		if (!fila.isVazia()) {
 			progressivo = true;
-			atual = fila.getUmItem();
+			atualizarVariaveis();
 			if (labirinto[atual.getX()][atual.getY()] != 'S')
 				labirinto[atual.getX()][atual.getY()] = '*';
 		}
