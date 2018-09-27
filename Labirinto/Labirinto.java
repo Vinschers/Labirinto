@@ -13,6 +13,15 @@ public class Labirinto{
 	protected Pilha<Coordenada> caminho;
 	protected boolean progressivo = true, terminou = false;
 
+
+
+	/**
+		*	O método equals() é um obrigatório.
+		*	@return Um boolean, sendo que, quando verdadeiro, o labirinto passado como parâmetro é igual ao labirinto
+		*	do this e, quando falso, são diferentes.
+		*	@param obj é o objeto a ser comparado com this.
+	*/
+
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -39,6 +48,8 @@ public class Labirinto{
 			return false;
 		return true;
 	}
+
+
 
 	public Labirinto (String arquivo) {
 		arq = arquivo;
@@ -271,9 +282,13 @@ public class Labirinto{
 		}
 	}
 
+
+
+
+
 	/**
-			*		O método desenhar() desenha o próprio labirinto na tela para que seja preenchido
-			*		com base nas colunas e linhas indicadas.
+			* O método toString() obrigatório
+			* @return uma string que contêm o próprio desenho do labirinto.
 	*/
 
 	public String toString() {
@@ -288,9 +303,26 @@ public class Labirinto{
 		return ret;
 	}
 
+	/**
+		*	O objeto isCompleto() é do tipo boolean.
+		*	@return uma variável boolean (nomeada "terminou") que, caso
+		*	ela teja o valor true, o labirinto estará completo, porém, se for false, não estará completo.
+	*/
+
 	public boolean isCompleto() {
 		return terminou;
 	}
+
+	/**
+				*		O método caminho() possui um nome quase auto-explicativo, quando o programa chega
+				*	no fim do labirinto, ou seja, no momento em que acabar os procedimentos
+				*	de percorrer o labirinto, ele exibirá as coordenadas do trajeto
+				*	percorrido a partir de uma pilha de coordenadas chamada "inverso",
+				*	nome dado por conta seus dados estarem na ordem oposta aos do caminho, faendo uma
+				*	exibição de dados na ordem correta.
+	*/
+
+
 	public String caminho() throws Exception{
 		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
 		String ret = "";
@@ -305,11 +337,5 @@ public class Labirinto{
 		return ret;
 	}
 
-	/**
-			*		O método ganhar() possui um nome quase auto-explicativo, quando o programa chega
-			*	no fim do labirinto, ou seja, no momento em que ele "ganhar", ele exibirá as coordenadas do trajeto
-			*	percorrido a partir de uma outra pilha de coordenadas chamada "inverso",
-			*	nome dado por conta seus dados estarem na ordem oposta aos do caminho, faendo uma
-			*	exibição de dados na ordem correta.
-	*/
+
 }
