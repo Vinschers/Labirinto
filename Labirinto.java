@@ -168,13 +168,6 @@ public class Labirinto{
 		}
 	}
 
-
-	/**
-		*		O método resolver() aplica os métodos do modo regressivo e progressivo até o fim da execução do programa,
-		*	caso a variável "progressivo" seja verdadeira, ele entrará no modo progressivo e, se tiver
-		*	um valor falso, partirá para o modo regressivo.
-	*/
-
 	protected static void resolver() throws Exception{
 		while (!terminou) {
 			while (progressivo && !terminou)
@@ -183,15 +176,6 @@ public class Labirinto{
 				modoRegressivo();
 		}
 	}
-
-
-	/**
-		*		O método modoProgressivo() atribui à variável atual voordenadas do labirinto em branco
-		*	e escreva o caracter "*" neles até achar a saída, o caracter 'S', usando as as coordenadas X e Y atuais.
-		*
-		*	@return nada quando o programa parar de ser executado para sair do método.
-		*
-	*/
 
 	protected static void modoProgressivo() throws Exception{
 		testarPosicoes();
@@ -203,16 +187,6 @@ public class Labirinto{
 		}
 		labirinto[atual.getX()][atual.getY()] = '*';
 	}
-
-
-	/**
-			*		O método modoRegressivo() atribui um valor da fila de coordenadas,
-			*	fazendo com que a variável atual percorra o caminho que já percorreu
-			*	até encontrar outra posição com espaço em branco.
-			*
-			*	@throw Exception caso não haja o caracter 'S', ou seja, a saída do labirinto.
-			*
-	*/
 
 	protected static void modoRegressivo() throws Exception{
 		if (possibilidades.isVazia()){
@@ -228,10 +202,6 @@ public class Labirinto{
 		}
 	}
 
-	/**
-			*		O método desenhar() desenha o próprio labirinto na tela para que seja preenchido.
-	*/
-
 	private static void desenhar() {
 		for (int i = 0; i < rows; i++){
 			for (int k = 0; k < columns; k++)
@@ -241,12 +211,6 @@ public class Labirinto{
 					System.out.println(labirinto[i][k]);
 		}
 	}
-
-	/**
-			*
-			*	@return nada quando o programa parar de ser executado para sair do método.
-			*
-	*/
 
 	protected static void ganhar() throws Exception{
 		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
