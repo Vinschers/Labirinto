@@ -1,3 +1,10 @@
+/**
+*	Classe para armazenar itens no formato de pilha. Segue a norma LIFO, ou seja, o último item armazenado é o primeiro a ser recuperado.
+*	@author Felipe Scherer Vicentin
+*	@author Guilherme Salim de Barros
+*	@since 2018
+*/
+
 package Pilha;
 import java.lang.reflect.*;
 

@@ -1,3 +1,10 @@
+/**
+*	Classe que armazena uma coordenada x e y de uma matriz. O valor de X e Y tem que ser necessáriamente maior ou igual a 0.
+*	@author Felipe Scherer Vicentin
+*	@author Guilherme Salim de Barros
+*	@since 2018
+*/
+
 package Coordenada;
 public class Coordenada implements Cloneable{
 	protected int x, y;

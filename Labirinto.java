@@ -1,3 +1,10 @@
+/**
+*	Classe executável para resolver o labirinto. Todas as suas partes estão encapsuladas em métodos.
+*	@author Felipe Scherer Vicentin
+*	@author Guilherme Salim de Barros
+*	@since 2018
+*/
+
 import Fila.*;
 import Pilha.*;
 import Coordenada.*;
