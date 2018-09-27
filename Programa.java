@@ -16,7 +16,7 @@ public class Programa {
 			lab.resolver();
 			if (lab.isCompleto()) {
 				PrintStream resultado = new PrintStream(new File(arq + ".res.txt"));
-				resultado.println(lab.labirinto());
+				resultado.println(lab.toString());
 				resultado.print(lab.caminho());
 				resultado.close();
 				System.out.print("Sucesso! ");

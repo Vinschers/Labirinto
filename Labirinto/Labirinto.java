@@ -12,9 +12,73 @@ public class Labirinto{
 	protected Pilha<Fila<Coordenada>> possibilidades;
 	protected Pilha<Coordenada> caminho;
 	protected boolean progressivo = true, terminou = false;
+
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (obj == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		Labirinto l = (Labirinto)obj;
+		if(l.rows != this.rows || l.columns != this.columns || l.dimensao != this.dimensao)
+			return false;
+		if (!l.labirinto.equals(this.labirinto))
+			return false;
+		if (l.atual != this.atual)
+			return false;
+		if (!l.fila.equals(this.fila))
+			return false;
+		if (!l.possibilidades.equals(this.possibilidades))
+			return false;
+		if (!l.caminho.equals(this.caminho))
+			return false;
+		if (l.progressivo != this.progressivo)
+			return false;
+		if (l.terminou != this.terminou)
+			return false;
+		return true;
+	}
+
 	public Labirinto (String arquivo) {
 		arq = arquivo;
 	}
+
+	public Labirinto (Labirinto modelo) throws Exception {
+		if (modelo == null)
+			throw new Exception("Modelo nulo!");
+		this.rows = modelo.rows;
+		this.columns = modelo.columns;
+		this.dimensao = modelo.dimensao;
+		this.labirinto = modelo.labirinto.clone();
+		this.atual = modelo.atual;
+		this.fila = (Fila<Coordenada>) modelo.fila.clone();
+		this.possibilidades = (Pilha<Fila<Coordenada>>) modelo.possibilidades.clone();
+		this.caminho = (Pilha<Coordenada>) modelo.caminho.clone();
+		this.progressivo = modelo.progressivo;
+		this.terminou = modelo.terminou;
+	}
+
+	public Object clone() {
+		Labirinto ret = null;
+		try {ret = new Labirinto(this);} catch(Exception e){}
+		return ret;
+	}
+	public int hashCode() {
+		int ret = 1;
+		ret = ret * 2 + (new Integer(rows).hashCode());
+		ret = ret * 2 + (new Integer(columns).hashCode());
+		ret = ret * 2 + (new Integer(dimensao).hashCode());
+		for (int i = 0; i < rows; i++)
+			for (int k = 0; k < columns; k++)
+				ret = ret * 2 + (new Character(labirinto[i][k]).hashCode());
+		ret = ret * 2 + (atual.hashCode());
+		ret = ret * 2 + (fila.hashCode());
+		ret = ret * 2 + (possibilidades.hashCode());
+		ret = ret * 2 + (caminho.hashCode());
+		return ret;
+	}
+
 	public void resolver() throws Exception{
 		readFile(arq);
 		initialize();
@@ -212,7 +276,7 @@ public class Labirinto{
 			*		com base nas colunas e linhas indicadas.
 	*/
 
-	public String labirinto() {
+	public String toString() {
 		String ret = "";
 		for (int i = 0; i < rows; i++){
 			for (int k = 0; k < columns; k++)
