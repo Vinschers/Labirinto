@@ -41,8 +41,8 @@ public class Labirinto{
 		*		O método readFile() lê o labirinto e atribui à matriz
 		*	labirinto as colunas e linhas, a entrada e a saída, verificando
 		*	a existência de 'E' e 'S'.
-		*	@param nomeArquivo nome ou local do arquivo que será lido.
-		*	@throws  Exception se não houver saída do labirinto.
+		*
+		*	@throws  Exception se não houver saída do labirinto
 	*/
 	protected static void readFile(String nomeArquivo) throws Exception{
 		BufferedReader file = new BufferedReader(new FileReader(nomeArquivo));
@@ -85,7 +85,7 @@ public class Labirinto{
 
 		*		O método findE(), como surgere o seu prório nome, tem a função
 		*	de encontrar o caracter 'E' no labirinto, que, na realidade, é a entrada
-		*	do trageto a ser percorrido. Ele para a execução do método com um return; para sair da busca quando achar 'E', pois é desnecessário continuá-la.
+		*	do trageto a ser percorrido. retorna nada para sair da busca quando achar 'E', pois é desnecessário continuá-la.
 		*	@throws Exception caso a entrada não seja encontrada.
 	*/
 
@@ -166,6 +166,13 @@ public class Labirinto{
 		}
 	}
 
+
+	/**
+		*		O método resolver() aplica os métodos do modo regressivo e progressivo até o fim da execução do programa,
+		*	caso a variável "progressivo" seja verdadeira, ele entrará no modo progressivo e, se tiver
+		*	um valor falso, partirá para o modo regressivo.
+	*/
+
 	protected static void resolver() throws Exception{
 		while (!terminou) {
 			while (progressivo && !terminou)
@@ -174,6 +181,13 @@ public class Labirinto{
 				modoRegressivo();
 		}
 	}
+
+
+	/**
+		*		O método modoProgressivo() atribui à variável atual voordenadas do labirinto em branco
+		*	e escreva o caracter "*" neles até achar a saída, o caracter 'S', usando as as coordenadas X e Y atuais. retorna nada quando o programa parar de ser executado para sair do método.
+		*
+	*/
 
 	protected static void modoProgressivo() throws Exception{
 		testarPosicoes();
@@ -185,6 +199,16 @@ public class Labirinto{
 		}
 		labirinto[atual.getX()][atual.getY()] = '*';
 	}
+
+
+	/**
+			*		O método modoRegressivo() atribui um valor da fila de coordenadas,
+			*	fazendo com que a variável atual percorra o caminho que já percorreu
+			*	até encontrar outra posição com espaço em branco.
+			*
+			*	@throws Exception caso não haja o caracter 'S', ou seja, a saída do labirinto.
+			*
+	*/
 
 	protected static void modoRegressivo() throws Exception{
 		if (possibilidades.isVazia()){
@@ -200,6 +224,11 @@ public class Labirinto{
 		}
 	}
 
+	/**
+			*		O método desenhar() desenha o próprio labirinto na tela para que seja preenchido
+			*		com base nas colunas e linhas indicadas.
+	*/
+
 	private static void desenhar() {
 		for (int i = 0; i < rows; i++){
 			for (int k = 0; k < columns; k++)
@@ -209,6 +238,14 @@ public class Labirinto{
 					System.out.println(labirinto[i][k]);
 		}
 	}
+
+	/**
+			*		O método ganhar() possui um nome quase auto-explicativo, quando o programa chega
+			*	no fim do labirinto, ou seja, no momento em que ele "ganhar", ele exibirá as coordenadas do trajeto
+			*	percorrido a partir de uma outra pilha de coordenadas chamada "inverso",
+			*	nome dado por conta seus dados estarem na ordem oposta aos do caminho, faendo uma
+			*	exibição de dados na ordem correta.
+	*/
 
 	protected static void ganhar() throws Exception{
 		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
