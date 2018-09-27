@@ -1,48 +1,25 @@
-/**
-*	Classe executável para resolver o labirinto. Todas as suas partes estão encapsuladas em métodos.
-*	@author Felipe Scherer Vicentin
-*	@author Guilherme Salim de Barros
-*	@since 2018
-*/
-
+package Labirinto;
+import Coordenada.*;
 import Fila.*;
 import Pilha.*;
-import Coordenada.*;
 import java.io.*;
 public class Labirinto{
-	static protected int rows = 0, columns = 0, dimensao = 0;
-	static protected char[][] labirinto;
-	static protected Coordenada atual;
-	static protected Fila<Coordenada> fila;
-	static protected Pilha<Fila<Coordenada>> possibilidades;
-	static protected Pilha<Coordenada> caminho;
-	static protected boolean progressivo = true, terminou = false;
-	public static void main(String[] args) {
-		try {
-			readFile(lerTeclado());
-			initialize();
-			resolver();
-		}
-		catch (Exception error) {
-			System.err.println(error.getMessage());
-		}
+	protected String arq;
+	protected int rows = 0, columns = 0, dimensao = 0;
+	protected char[][] labirinto;
+	protected Coordenada atual;
+	protected Fila<Coordenada> fila;
+	protected Pilha<Fila<Coordenada>> possibilidades;
+	protected Pilha<Coordenada> caminho;
+	protected boolean progressivo = true, terminou = false;
+	public Labirinto (String arquivo) {
+		arq = arquivo;
 	}
-
-	/**
-	*		O método lerTeclado() pede para o usuário digitar o nome
-	*	do arquivo com o labirinto, o verifica a validade dele.
-	*	@return o nome do arquivo
-	*/
-	private static String lerTeclado() throws Exception {
-		String ret = "";
-		try {
-			System.out.print("Digite aqui o nome do arquivo que será lido: ");
-			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-			ret = keyboard.readLine();
-		} catch(Exception e) {System.err.println(e.getMessage());}
-		return ret;
+	public void resolver() throws Exception{
+		readFile(arq);
+		initialize();
+		fazer();
 	}
-
 
 	/**
 		*		O método readFile() lê o labirinto e atribui à matriz
@@ -51,7 +28,7 @@ public class Labirinto{
 		*
 		*	@throws  Exception se não houver saída do labirinto
 	*/
-	protected static void readFile(String nomeArquivo) throws Exception{
+	protected void readFile(String nomeArquivo) throws Exception{
 		BufferedReader file = new BufferedReader(new FileReader(nomeArquivo));
 		rows = Integer.parseInt(file.readLine());
 		columns = Integer.parseInt(file.readLine());
@@ -81,7 +58,7 @@ public class Labirinto{
 		*	chamando o método E. A aplicação desse método é realizada no começo da execução do programa.
 	*/
 
-	protected static void initialize() throws Exception{
+	protected void initialize() throws Exception{
 		dimensao = rows * columns;
 		caminho = new Pilha<Coordenada>(dimensao);
 		possibilidades = new Pilha<Fila<Coordenada>>(dimensao);
@@ -96,7 +73,7 @@ public class Labirinto{
 		*	@throws Exception caso a entrada não seja encontrada.
 	*/
 
-	protected static void findE() throws Exception{
+	protected void findE() throws Exception{
 		for (int i = 0; i < columns; i++) {			//bordas horizontais
 			if (labirinto[0][i] == 'E'){		//cima
 				atual = new Coordenada(0, i);
@@ -124,10 +101,10 @@ public class Labirinto{
 
 	/**
 			*		O método testarPosicoes() delclara uma fila de coordenadas e testa
-			*		as possibilidades, caso sejam válidas (diferentes de '*'), as armazena.
+			*		as possibilidades, caso sejam válidas (diferentes de '#'), as armazena.
 	*/
 
-	protected static void testarPosicoes() throws Exception {
+	protected void testarPosicoes() throws Exception {
 		fila = new Fila<Coordenada>(3);
 		int row = atual.getX();
 		int column = atual.getY();
@@ -152,7 +129,7 @@ public class Labirinto{
 				*		com um espaço em branco.
 	*/
 
-	protected static void atualizarVariaveis() throws Exception{
+	protected void atualizarVariaveis() throws Exception{
 		if (progressivo) {
 			if (!fila.isVazia()) {
 				atual = fila.getUmItem();
@@ -180,7 +157,7 @@ public class Labirinto{
 		*	um valor falso, partirá para o modo regressivo.
 	*/
 
-	protected static void resolver() throws Exception{
+	protected void fazer() throws Exception{
 		while (!terminou) {
 			while (progressivo && !terminou)
 				modoProgressivo();
@@ -196,11 +173,10 @@ public class Labirinto{
 		*
 	*/
 
-	protected static void modoProgressivo() throws Exception{
+	protected void modoProgressivo() throws Exception{
 		testarPosicoes();
 		atualizarVariaveis();
 		if (labirinto[atual.getX()][atual.getY()] == 'S'){
-			ganhar();
 			terminou = true;
 			return;
 		}
@@ -217,7 +193,7 @@ public class Labirinto{
 			*
 	*/
 
-	protected static void modoRegressivo() throws Exception{
+	protected void modoRegressivo() throws Exception{
 		if (possibilidades.isVazia()){
 			terminou = true;
 			throw new Exception("Não há saída para o labirinto!");
@@ -236,14 +212,33 @@ public class Labirinto{
 			*		com base nas colunas e linhas indicadas.
 	*/
 
-	private static void desenhar() {
+	public String labirinto() {
+		String ret = "";
 		for (int i = 0; i < rows; i++){
 			for (int k = 0; k < columns; k++)
 				if (k < columns - 1)
-					System.out.print(labirinto[i][k]);
+					ret += (labirinto[i][k]);
 				else
-					System.out.println(labirinto[i][k]);
+					ret += ((labirinto[i][k]) + "\r\n");
 		}
+		return ret;
+	}
+
+	public boolean isCompleto() {
+		return terminou;
+	}
+	public String caminho() throws Exception{
+		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
+		String ret = "";
+		while (!caminho.isVazia()) {
+			inverso.guarde(caminho.getUmItem());
+			caminho.jogueForaUmItem();
+		}
+		while (!inverso.isVazia()) {
+			ret += (inverso.getUmItem()) + " ";
+			inverso.jogueForaUmItem();
+		}
+		return ret;
 	}
 
 	/**
@@ -253,18 +248,4 @@ public class Labirinto{
 			*	nome dado por conta seus dados estarem na ordem oposta aos do caminho, faendo uma
 			*	exibição de dados na ordem correta.
 	*/
-
-	protected static void ganhar() throws Exception{
-		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
-		desenhar();
-		while (!caminho.isVazia()) {
-			inverso.guarde(caminho.getUmItem());
-			caminho.jogueForaUmItem();
-		}
-		System.out.println("Caminho que foi percorrido: ");
-		while (!inverso.isVazia()) {
-			System.out.println(inverso.getUmItem());
-			inverso.jogueForaUmItem();
-		}
-	}
 }
