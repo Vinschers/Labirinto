@@ -1,6 +1,12 @@
+/**
+*	Classe para armazenar itens no formato de fila. Segue a norma FIFO, ou seja, o primeiro item armazenado é o primeiro a ser recuperado.
+*	@author Felipe Scherer Vicentin
+*	@author Guilherme Salim de Barros
+*	@since 2018
+*/
+
 package Fila;
 import java.lang.reflect.*;
- //FIFO = First In First Out
  public class Fila<X> implements Cloneable{
  	protected int qtd, comeco, fim;
  	protected Object[] vetor;

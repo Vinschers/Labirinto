@@ -1,41 +1,89 @@
+package Labirinto;
+import Coordenada.*;
 import Fila.*;
 import Pilha.*;
-import Coordenada.*;
 import java.io.*;
 public class Labirinto{
-	static protected int rows = 0, columns = 0, dimensao = 0;
-	static protected char[][] labirinto;
-	static protected Coordenada atual;
-	static protected Fila<Coordenada> fila;
-	static protected Pilha<Fila<Coordenada>> possibilidades;
-	static protected Pilha<Coordenada> caminho;
-	static protected boolean progressivo = true, terminou = false;
-	public static void main(String[] args) {
-		try {
-			readFile(lerTeclado());
-			initialize();
-			resolver();
-		}
-		catch (Exception error) {
-			System.err.println(error.getMessage());
-		}
+	protected String arq;
+	protected int rows = 0, columns = 0, dimensao = 0;
+	protected char[][] labirinto;
+	protected Coordenada atual;
+	protected Fila<Coordenada> fila;
+	protected Pilha<Fila<Coordenada>> possibilidades;
+	protected Pilha<Coordenada> caminho;
+	protected boolean progressivo = true, terminou = false;
+
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (obj == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		Labirinto l = (Labirinto)obj;
+		if(l.rows != this.rows || l.columns != this.columns || l.dimensao != this.dimensao)
+			return false;
+		if (!l.labirinto.equals(this.labirinto))
+			return false;
+		if (l.atual != this.atual)
+			return false;
+		if (!l.fila.equals(this.fila))
+			return false;
+		if (!l.possibilidades.equals(this.possibilidades))
+			return false;
+		if (!l.caminho.equals(this.caminho))
+			return false;
+		if (l.progressivo != this.progressivo)
+			return false;
+		if (l.terminou != this.terminou)
+			return false;
+		return true;
 	}
 
-	/**
-	*		O método lerTeclado() pede para o usuário digitar o nome
-	*	do arquivo com o labirinto, o verifica a validade dele.
-	*	@return o nome do arquivo
-	*/
-	private static String lerTeclado() throws Exception {
-		String ret = "";
-		try {
-			System.out.print("Digite aqui o nome do arquivo que será lido: ");
-			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-			ret = keyboard.readLine();
-		} catch(Exception e) {System.err.println(e.getMessage());}
+	public Labirinto (String arquivo) {
+		arq = arquivo;
+	}
+
+	public Labirinto (Labirinto modelo) throws Exception {
+		if (modelo == null)
+			throw new Exception("Modelo nulo!");
+		this.rows = modelo.rows;
+		this.columns = modelo.columns;
+		this.dimensao = modelo.dimensao;
+		this.labirinto = modelo.labirinto.clone();
+		this.atual = modelo.atual;
+		this.fila = (Fila<Coordenada>) modelo.fila.clone();
+		this.possibilidades = (Pilha<Fila<Coordenada>>) modelo.possibilidades.clone();
+		this.caminho = (Pilha<Coordenada>) modelo.caminho.clone();
+		this.progressivo = modelo.progressivo;
+		this.terminou = modelo.terminou;
+	}
+
+	public Object clone() {
+		Labirinto ret = null;
+		try {ret = new Labirinto(this);} catch(Exception e){}
+		return ret;
+	}
+	public int hashCode() {
+		int ret = 1;
+		ret = ret * 2 + (new Integer(rows).hashCode());
+		ret = ret * 2 + (new Integer(columns).hashCode());
+		ret = ret * 2 + (new Integer(dimensao).hashCode());
+		for (int i = 0; i < rows; i++)
+			for (int k = 0; k < columns; k++)
+				ret = ret * 2 + (new Character(labirinto[i][k]).hashCode());
+		ret = ret * 2 + (atual.hashCode());
+		ret = ret * 2 + (fila.hashCode());
+		ret = ret * 2 + (possibilidades.hashCode());
+		ret = ret * 2 + (caminho.hashCode());
 		return ret;
 	}
 
+	public void resolver() throws Exception{
+		readFile(arq);
+		initialize();
+		fazer();
+	}
 
 	/**
 		*		O método readFile() lê o labirinto e atribui à matriz
@@ -44,7 +92,7 @@ public class Labirinto{
 		*
 		*	@throws  Exception se não houver saída do labirinto
 	*/
-	protected static void readFile(String nomeArquivo) throws Exception{
+	protected void readFile(String nomeArquivo) throws Exception{
 		BufferedReader file = new BufferedReader(new FileReader(nomeArquivo));
 		rows = Integer.parseInt(file.readLine());
 		columns = Integer.parseInt(file.readLine());
@@ -74,7 +122,7 @@ public class Labirinto{
 		*	chamando o método E. A aplicação desse método é realizada no começo da execução do programa.
 	*/
 
-	protected static void initialize() throws Exception{
+	protected void initialize() throws Exception{
 		dimensao = rows * columns;
 		caminho = new Pilha<Coordenada>(dimensao);
 		possibilidades = new Pilha<Fila<Coordenada>>(dimensao);
@@ -85,13 +133,11 @@ public class Labirinto{
 
 		*		O método findE(), como surgere o seu prório nome, tem a função
 		*	de encontrar o caracter 'E' no labirinto, que, na realidade, é a entrada
-		*	do trageto a ser percorrido.
-		*
-		*	@return nada para sair da busca quando achar 'E', pois é desnecessário contiuá-la.
+		*	do trageto a ser percorrido. retorna nada para sair da busca quando achar 'E', pois é desnecessário continuá-la.
 		*	@throws Exception caso a entrada não seja encontrada.
 	*/
 
-	protected static void findE() throws Exception{
+	protected void findE() throws Exception{
 		for (int i = 0; i < columns; i++) {			//bordas horizontais
 			if (labirinto[0][i] == 'E'){		//cima
 				atual = new Coordenada(0, i);
@@ -119,10 +165,10 @@ public class Labirinto{
 
 	/**
 			*		O método testarPosicoes() delclara uma fila de coordenadas e testa
-			*		as possibilidades, caso sejam válidas (diferentes de '*'), as armazena.
+			*		as possibilidades, caso sejam válidas (diferentes de '#'), as armazena.
 	*/
 
-	protected static void testarPosicoes() throws Exception {
+	protected void testarPosicoes() throws Exception {
 		fila = new Fila<Coordenada>(3);
 		int row = atual.getX();
 		int column = atual.getY();
@@ -147,7 +193,7 @@ public class Labirinto{
 				*		com um espaço em branco.
 	*/
 
-	protected static void atualizarVariaveis() throws Exception{
+	protected void atualizarVariaveis() throws Exception{
 		if (progressivo) {
 			if (!fila.isVazia()) {
 				atual = fila.getUmItem();
@@ -162,13 +208,20 @@ public class Labirinto{
 		else {
 			atual = caminho.getUmItem();
 			caminho.jogueForaUmItem();
+			labirinto[atual.getX()][atual.getY()] = ' ';
 			fila = possibilidades.getUmItem();
 			possibilidades.jogueForaUmItem();
-			labirinto[atual.getX()][atual.getY()] = ' ';
 		}
 	}
 
-	protected static void resolver() throws Exception{
+
+	/**
+		*		O método resolver() aplica os métodos do modo regressivo e progressivo até o fim da execução do programa,
+		*	caso a variável "progressivo" seja verdadeira, ele entrará no modo progressivo e, se tiver
+		*	um valor falso, partirá para o modo regressivo.
+	*/
+
+	protected void fazer() throws Exception{
 		while (!terminou) {
 			while (progressivo && !terminou)
 				modoProgressivo();
@@ -177,18 +230,34 @@ public class Labirinto{
 		}
 	}
 
-	protected static void modoProgressivo() throws Exception{
+
+	/**
+		*		O método modoProgressivo() atribui à variável atual voordenadas do labirinto em branco
+		*	e escreva o caracter "*" neles até achar a saída, o caracter 'S', usando as as coordenadas X e Y atuais. retorna nada quando o programa parar de ser executado para sair do método.
+		*
+	*/
+
+	protected void modoProgressivo() throws Exception{
 		testarPosicoes();
 		atualizarVariaveis();
 		if (labirinto[atual.getX()][atual.getY()] == 'S'){
-			ganhar();
 			terminou = true;
 			return;
 		}
 		labirinto[atual.getX()][atual.getY()] = '*';
 	}
 
-	protected static void modoRegressivo() throws Exception{
+
+	/**
+			*		O método modoRegressivo() atribui um valor da fila de coordenadas,
+			*	fazendo com que a variável atual percorra o caminho que já percorreu
+			*	até encontrar outra posição com espaço em branco.
+			*
+			*	@throws Exception caso não haja o caracter 'S', ou seja, a saída do labirinto.
+			*
+	*/
+
+	protected void modoRegressivo() throws Exception{
 		if (possibilidades.isVazia()){
 			terminou = true;
 			throw new Exception("Não há saída para o labirinto!");
@@ -196,33 +265,51 @@ public class Labirinto{
 		atualizarVariaveis();
 		if (!fila.isVazia()) {
 			progressivo = true;
-			atual = fila.getUmItem();
+			atualizarVariaveis();
 			if (labirinto[atual.getX()][atual.getY()] != 'S')
 				labirinto[atual.getX()][atual.getY()] = '*';
 		}
 	}
 
-	private static void desenhar() {
+	/**
+			*		O método desenhar() desenha o próprio labirinto na tela para que seja preenchido
+			*		com base nas colunas e linhas indicadas.
+	*/
+
+	public String toString() {
+		String ret = "";
 		for (int i = 0; i < rows; i++){
 			for (int k = 0; k < columns; k++)
 				if (k < columns - 1)
-					System.out.print(labirinto[i][k]);
+					ret += (labirinto[i][k]);
 				else
-					System.out.println(labirinto[i][k]);
+					ret += ((labirinto[i][k]) + "\r\n");
 		}
+		return ret;
 	}
 
-	protected static void ganhar() throws Exception{
+	public boolean isCompleto() {
+		return terminou;
+	}
+	public String caminho() throws Exception{
 		Pilha<Coordenada> inverso = new Pilha<Coordenada>(dimensao);
-		desenhar();
+		String ret = "";
 		while (!caminho.isVazia()) {
 			inverso.guarde(caminho.getUmItem());
 			caminho.jogueForaUmItem();
 		}
-		System.out.println("Caminho que foi percorrido: ");
 		while (!inverso.isVazia()) {
-			System.out.println(inverso.getUmItem());
+			ret += (inverso.getUmItem()) + " ";
 			inverso.jogueForaUmItem();
 		}
+		return ret;
 	}
+
+	/**
+			*		O método ganhar() possui um nome quase auto-explicativo, quando o programa chega
+			*	no fim do labirinto, ou seja, no momento em que ele "ganhar", ele exibirá as coordenadas do trajeto
+			*	percorrido a partir de uma outra pilha de coordenadas chamada "inverso",
+			*	nome dado por conta seus dados estarem na ordem oposta aos do caminho, faendo uma
+			*	exibição de dados na ordem correta.
+	*/
 }
