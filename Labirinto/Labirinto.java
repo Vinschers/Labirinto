@@ -1,3 +1,10 @@
+/**
+*	Classe com as características do labirinto. Todas as suas partes estão encapsuladas em métodos ou variáveis globais no private.
+*	@author Felipe Scherer Vicentin & Guilherme Salim de Barros
+*	@since 2018
+*/
+
+
 package Labirinto;
 import Coordenada.*;
 import Fila.*;
@@ -13,6 +20,16 @@ public class Labirinto{
 	protected Pilha<Coordenada> caminho;
 	protected boolean progressivo = true, terminou = false;
 
+
+
+	/**
+			*	@param arquivo que possui seu valor atribuído à variável arq,
+			*	que será o arquivo a ser lido
+		*/
+
+		public Labirinto (String arquivo) {
+			arq = arquivo;
+	}
 
 
 	/**
@@ -49,12 +66,11 @@ public class Labirinto{
 		return true;
 	}
 
-
-
-	public Labirinto (String arquivo) {
-		arq = arquivo;
-	}
-
+	/**
+		*	Método que copia um labirinto para this. Com isso, this será exatamente igual ao labirinto a ser copiado.
+		*	@param modelo é um labirinto que será copiado para o labirinto atual.
+		*	@throws Exception quando o labirinto que seria copiado é null.
+	*/
 	public Labirinto (Labirinto modelo) throws Exception {
 		if (modelo == null)
 			throw new Exception("Modelo nulo!");
@@ -70,11 +86,22 @@ public class Labirinto{
 		this.terminou = modelo.terminou;
 	}
 
+	/**
+		*	Método obrigatório clone(). Copia o labirinto atual (this) através do construtor de cópia.
+		*	@return um objeto que é exatamente igual à this.
+	*/
+
 	public Object clone() {
 		Labirinto ret = null;
 		try {ret = new Labirinto(this);} catch(Exception e){}
 		return ret;
 	}
+
+	/**
+		*	Método obrigatório hashCode().
+		*	@return o hashCode de this.
+	*/
+
 	public int hashCode() {
 		int ret = 1;
 		ret = ret * 2 + (new Integer(rows).hashCode());
@@ -90,6 +117,28 @@ public class Labirinto{
 		return ret;
 	}
 
+	/**
+				* O método toString() obrigatório.
+				* @return uma string que contêm o próprio desenho do labirinto.
+		*/
+
+		public String toString() {
+			String ret = "";
+			for (int i = 0; i < rows; i++){
+				for (int k = 0; k < columns; k++)
+					if (k < columns - 1)
+						ret += (labirinto[i][k]);
+					else
+						ret += ((labirinto[i][k]) + "\r\n");
+			}
+			return ret;
+	}
+
+	/**
+		*		O método resolver chama as três funções: readFile(), initialize() e fazer() para
+		*	facilitar a ultilização do conjunto em outros métodos.
+	*/
+
 	public void resolver() throws Exception{
 		readFile(arq);
 		initialize();
@@ -101,7 +150,8 @@ public class Labirinto{
 		*	labirinto as colunas e linhas, a entrada e a saída, verificando
 		*	a existência de 'E' e 'S'.
 		*
-		*	@throws  Exception se não houver saída do labirinto
+		*	@throws  Exception se não houver saída do labirinto.
+		*	@param nomeArquivo que indica o arquivo a ser lido.
 	*/
 	protected void readFile(String nomeArquivo) throws Exception{
 		BufferedReader file = new BufferedReader(new FileReader(nomeArquivo));
@@ -130,7 +180,7 @@ public class Labirinto{
 		*		O método initialize() declara uma pilha de coordenadas, que é o
 		*	caminho a ser percorrido no labirinto, e uma pilha de filas de coordenadas,
 		*	a qual indica as possibilidadesde rota atuais. Além dessas ações, ele encontra a entrada do percurso
-		*	chamando o método E. A aplicação desse método é realizada no começo da execução do programa.
+		*	chamando o método findE(). A aplicação do initialize() é realizada no começo da execução do programa.
 	*/
 
 	protected void initialize() throws Exception{
@@ -144,7 +194,7 @@ public class Labirinto{
 
 		*		O método findE(), como surgere o seu prório nome, tem a função
 		*	de encontrar o caracter 'E' no labirinto, que, na realidade, é a entrada
-		*	do trageto a ser percorrido. retorna nada para sair da busca quando achar 'E', pois é desnecessário continuá-la.
+		*	do trageto a ser percorrido. Retorna nada para sair da busca quando achar 'E', pois é desnecessário continuá-la.
 		*	@throws Exception caso a entrada não seja encontrada.
 	*/
 
@@ -175,7 +225,7 @@ public class Labirinto{
 
 
 	/**
-			*		O método testarPosicoes() delclara uma fila de coordenadas e testa
+			*			O método testarPosicoes() delclara uma fila de coordenadas e testa
 			*		as possibilidades, caso sejam válidas (diferentes de '#'), as armazena.
 	*/
 
@@ -198,10 +248,10 @@ public class Labirinto{
 	/**
 				*			O método atualizarVarizaveis() possui um nome sugestivo em relação a sua função,
 				*		ele atribui um novo valor para a variavel "atual" com base nos dados da fila de posições
-				*		disponíveis, porém, caso a fila esteja vazia, nada ocorrerá. Todos os passos descritos
-				*		anteriormente só ocorrerão caso o movimento esteja normal, mas, se ele for regressivo,
+				*		disponíveis e jogará fora um ítem dela, porém, caso a fila esteja vazia, nada ocorrerá.
+				*		Todos os passos descritos anteriormente só ocorrerão caso o movimento esteja normal, mas, se ele for regressivo,
 				*		atual receberá uma coordenada do caminho já percorrido e marcará a posição atual no labirinto
-				*		com um espaço em branco.
+				*		com um espaço em branco e uma das possibilidades será jogada fora.
 	*/
 
 	protected void atualizarVariaveis() throws Exception{
@@ -228,7 +278,8 @@ public class Labirinto{
 
 	/**
 		*		O método resolver() aplica os métodos do modo regressivo e progressivo até o fim da execução do programa,
-		*	caso a variável "progressivo" seja verdadeira, ele entrará no modo progressivo e, se tiver
+		*	que é quando a saída é encontrada ou quando ela não existe (nesse último caso, nenhum modo pe feito).
+		*	Caso a variável "progressivo" seja verdadeira, ele entrará no modo progressivo e, se tiver
 		*	um valor falso, partirá para o modo regressivo.
 	*/
 
@@ -243,8 +294,12 @@ public class Labirinto{
 
 
 	/**
-		*		O método modoProgressivo() atribui à variável atual voordenadas do labirinto em branco
-		*	e escreva o caracter "*" neles até achar a saída, o caracter 'S', usando as as coordenadas X e Y atuais. retorna nada quando o programa parar de ser executado para sair do método.
+		*		O método modoProgressivo() testa as posições disponíveis, atualiza as variáveis
+		*	e escreve o caracter "*" nas posições do labirinto até achar a saída, o caracter 'S',
+		*	usando as as coordenadas X e Y atuais.
+		*
+		*	@retorn nada quando o programa parar de ser executado, ou seja,
+		*	quando a saída for encontrada, para sair do método.
 		*
 	*/
 
@@ -260,9 +315,11 @@ public class Labirinto{
 
 
 	/**
-			*		O método modoRegressivo() atribui um valor da fila de coordenadas,
-			*	fazendo com que a variável atual percorra o caminho que já percorreu
-			*	até encontrar outra posição com espaço em branco.
+			*		O método modoRegressivo() verifica se há uma saída no labirinto, caso não,
+			*	ele retorna uma exeção e termina o programa. Em uma situação oposta, ele atualiza as
+			*	variáveis do programa, v erifica se a fila não está vazia, ocorre uma segunda atualização de
+			*	variáveis e ele compara os dados das cordenadas X e Y da posição atual, vendo se seus dados não
+			*	são a saída para remarcar um asterisco e retornar ao modo progressivo do programa.
 			*
 			*	@throws Exception caso não haja o caracter 'S', ou seja, a saída do labirinto.
 			*
@@ -286,27 +343,13 @@ public class Labirinto{
 
 
 
-	/**
-			* O método toString() obrigatório
-			* @return uma string que contêm o próprio desenho do labirinto.
-	*/
 
-	public String toString() {
-		String ret = "";
-		for (int i = 0; i < rows; i++){
-			for (int k = 0; k < columns; k++)
-				if (k < columns - 1)
-					ret += (labirinto[i][k]);
-				else
-					ret += ((labirinto[i][k]) + "\r\n");
-		}
-		return ret;
-	}
 
 	/**
 		*	O objeto isCompleto() é do tipo boolean.
+		*
 		*	@return uma variável boolean (nomeada "terminou") que, caso
-		*	ela teja o valor true, o labirinto estará completo, porém, se for false, não estará completo.
+		*	ela teja o valor true, o labirinto estará completo, porém, se for false, estará incompleto.
 	*/
 
 	public boolean isCompleto() {
@@ -314,12 +357,14 @@ public class Labirinto{
 	}
 
 	/**
-				*		O método caminho() possui um nome quase auto-explicativo, quando o programa chega
+				*		A String caminho() possui um nome quase auto-explicativo, quando o programa chega
 				*	no fim do labirinto, ou seja, no momento em que acabar os procedimentos
 				*	de percorrer o labirinto, ele exibirá as coordenadas do trajeto
 				*	percorrido a partir de uma pilha de coordenadas chamada "inverso",
 				*	nome dado por conta seus dados estarem na ordem oposta aos do caminho, faendo uma
 				*	exibição de dados na ordem correta.
+				*
+				*	@return a String "ret" com todo o percurso no final da execução.
 	*/
 
 
