@@ -100,4 +100,22 @@ public class Coordenada implements Cloneable{
 			throw new Exception("y era menor que 0!");
 		return this.y;
 	}
+	/**
+	*	Método que modifica a coordenada x. Ao ser modificada, a posição vertical da coordenada muda.
+	*	@throws Exception quando a coordenada fornecida é menor que 0.
+	*/
+	public void setX(int x) throws Exception{
+		if (x < 0)
+			throw new Exception("valor do x invalido!");
+		this.x = x;
+	}
+	/**
+	*	Método que modifica a coordenada y. Ao ser modificada, a posição horizontal da coordenada muda.
+	*	@throws Exception quando a coordenada fornecida é menor que 0.
+	*/
+	public void setY(int y) throws Exception{
+		if (y < 0)
+			throw new Exception("valor do y invalido!");
+		this.y = y;
+	}
 }

@@ -1,5 +1,5 @@
 /**
-*	Classe executável para resolver o labirinto. Todas as suas partes estão encapsuladas em métodos.
+*	Classe executável para resolver o labirinto. Ela utiliza uma instância da classe Labirinto para resolver o problema.
 *	@author Felipe Scherer Vicentin & Guilherme Salim de Barros
 *	@since 2018
 */
@@ -15,12 +15,14 @@ public class Programa {
 			Labirinto lab = new Labirinto(arq);
 			lab.resolver();
 			if (lab.isCompleto()) {
-				PrintStream resultado = new PrintStream(new File(arq + ".res.txt"));
+				String arqFinal = arq.substring(arq.lastIndexOf('\\') + 1, arq.length() - 4) + ".res.txt";
+				PrintStream resultado = new PrintStream(arqFinal);
 				resultado.println(lab.toString());
+				resultado.println("Caminho percorrido: ");
 				resultado.print(lab.caminho());
 				resultado.close();
 				System.out.print("Sucesso! ");
-				System.out.println("Verifique o arquivo " + arq + ".res.txt.");
+				System.out.println("Verifique o arquivo " + arqFinal + ".");
 			}
 		}
 		catch(Exception e){System.err.println(e.getMessage());}
